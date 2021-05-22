@@ -1,0 +1,2 @@
+rootProject.name = "iTag - Bluetooth Low Energy"
+include ':app'
