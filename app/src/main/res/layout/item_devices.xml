@@ -1,61 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/itemContent"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/imgDevice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/itemTxtDeviceRssi"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/itemTxtDeviceName"
-        app:srcCompat="@drawable/ic_bluetooth" />
+    <data>
+        <variable
+            name="bleDevice"
+            type="com.clj.fastble.data.BleDevice" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/itemTxtDeviceName"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toStartOf="@+id/itemBtConnect"
-        app:layout_constraintStart_toEndOf="@+id/imgDevice"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Itag" />
+        <variable
+            name="isConnected"
+            type="Boolean" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/itemTxtDeviceRssi"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        app:layout_constraintEnd_toStartOf="@+id/itemBtConnect"
-        app:layout_constraintStart_toEndOf="@+id/imgDevice"
-        app:layout_constraintTop_toBottomOf="@+id/itemTxtDeviceName"
-        tools:text="Rssi" />
+        <variable
+            name="viewHolder"
+            type="com.reisdeveloper.itag_bluetoothlowenergy.adapters.ScanDevicesAdapter.ScanDevicesViewHolder" />
+    </data>
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/itemBtConnect"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/teal_700"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <View
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/itemContent"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="8dp"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/itemBtConnect" />
+        android:layout_height="wrap_content"
+        android:onClick="@{() -> viewHolder.details(bleDevice, isConnected)}">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imgDevice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/itemTxtDeviceRssi"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/itemTxtDeviceName" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/itemTxtDeviceName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@{bleDevice.name}"
+            app:layout_constraintEnd_toStartOf="@+id/itemBtConnect"
+            app:layout_constraintStart_toEndOf="@+id/imgDevice"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Itag" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/itemTxtDeviceMac"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@{bleDevice.mac}"
+            app:layout_constraintEnd_toStartOf="@+id/itemBtConnect"
+            app:layout_constraintStart_toEndOf="@+id/imgDevice"
+            app:layout_constraintTop_toBottomOf="@+id/itemTxtDeviceName"
+            tools:text="Mac" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/itemTxtDeviceRssi"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="@{@string/rssi(bleDevice.rssi)}"
+            app:layout_constraintEnd_toStartOf="@+id/itemBtConnect"
+            app:layout_constraintStart_toEndOf="@+id/imgDevice"
+            app:layout_constraintTop_toBottomOf="@+id/itemTxtDeviceMac"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:text="Rssi" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/itemBtConnect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/teal_700"
+            android:textColor="@color/white"
+            android:text="@{isConnected ? @string/disconnect : @string/connect}"
+            android:onClick="@{() -> viewHolder.buttonClick(bleDevice, isConnected)}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/itemBtConnect" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
 

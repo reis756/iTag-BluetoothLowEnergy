@@ -14,4 +14,6 @@
     <string name="disconnecting">Disconnecting</string>
     <string name="connecting">Connecting</string>
     <string name="device_alert">Device Alert</string>
+    <string name="rssi">RSSI: %d</string>
+    <string name="distance_in_meters">*Distance in meters</string>
 </resources>

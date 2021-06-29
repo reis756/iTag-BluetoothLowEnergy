@@ -1,7 +1,6 @@
 package com.reisdeveloper.itag_bluetoothlowenergy
 
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration

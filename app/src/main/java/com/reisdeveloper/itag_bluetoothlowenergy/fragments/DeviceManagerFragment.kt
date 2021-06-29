@@ -18,9 +18,7 @@ import java.util.*
 
 class DeviceManagerFragment : Fragment() {
 
-    private var _binding: FragmentDeviceManagerBinding? = null
-
-    private val binding get() = _binding!!
+    private var binding: FragmentDeviceManagerBinding? = null
 
     private val writeServiceUUID: UUID = UUID.fromString("00001802-0000-1000-8000-00805f9b34fb")
     private val writeCharacteristicUUID: UUID = UUID.fromString("00002a06-0000-1000-8000-00805f9b34fb")
@@ -36,14 +34,14 @@ class DeviceManagerFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        _binding = FragmentDeviceManagerBinding.inflate(inflater, container, false)
-        return binding.root
+        binding = FragmentDeviceManagerBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.btAlert.setOnClickListener {
+        binding?.btAlert?.setOnClickListener {
             bleWrite()
         }
 
@@ -60,10 +58,10 @@ class DeviceManagerFragment : Fragment() {
                 override fun onRssiFailure(exception: BleException) {}
                 override fun onRssiSuccess(rssi: Int) {
                     when(rssi){
-                        in -69..-1 -> binding.txtDistance.text = "-1m"
-                        in -80..-70 -> binding.txtDistance.text = "1m"
-                        in -89..-81 -> binding.txtDistance.text = "2m"
-                        else -> binding.txtDistance.text = "+3m"
+                        in -69..-1 -> binding?.txtDistance?.text = "-1m"
+                        in -80..-70 -> binding?.txtDistance?.text = "1m"
+                        in -89..-81 -> binding?.txtDistance?.text = "2m"
+                        else -> binding?.txtDistance?.text = "+3m"
                     }
                 }
             })
@@ -108,10 +106,5 @@ class DeviceManagerFragment : Fragment() {
                 bleDevice?.let { bleRssi() }
             }
         },0,1000)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

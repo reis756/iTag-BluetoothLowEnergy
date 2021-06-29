@@ -61,34 +61,34 @@ class ScanDevicesAdapter : RecyclerView.Adapter<ScanDevicesAdapter.ScanDevicesVi
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(device: BleDevice) {
-            binding.itemTxtDeviceName.text =
-                String.format("%s\n%s", device.name ?: "Unknown", device.mac)
+            binding.isConnected = BleManager.getInstance().isConnected(device)
+            binding.bleDevice = device
+            binding.viewHolder = this
 
-            binding.itemTxtDeviceRssi.text = String.format("RSSI: %d", device.rssi)
+            setIcon(BleManager.getInstance().isConnected(device))
 
-            val isConnected = BleManager.getInstance().isConnected(device)
+            binding.executePendingBindings()
+        }
 
-            if (isConnected) {
+        private fun setIcon(isConnected: Boolean) {
+            if(isConnected)
                 binding.imgDevice.setImageResource(R.drawable.ic_connected)
-                binding.itemBtConnect.text = context.getString(R.string.disconnect)
-            } else {
+            else
                 binding.imgDevice.setImageResource(R.drawable.ic_bluetooth)
-                binding.itemBtConnect.text = context.getString(R.string.connect)
-            }
+        }
 
-            binding.itemBtConnect.setOnClickListener {
-                if (isConnected) {
-                    binding.itemBtConnect.text = context.getString(R.string.disconnecting)
-                    listener?.onDisconnect(device)
-                } else {
-                    binding.itemBtConnect.text = context.getString(R.string.connecting)
-                    listener?.onConnect(device)
-                }
-            }
+        fun details(device: BleDevice, isConnected: Boolean){
+            if (isConnected)
+                listener?.onDetail(device)
+        }
 
-            binding.itemContent.setOnClickListener {
-                if (isConnected)
-                    listener?.onDetail(device)
+        fun buttonClick(device: BleDevice, isConnected: Boolean) {
+            if (isConnected) {
+                binding.itemBtConnect.text = context.getString(R.string.disconnecting)
+                listener?.onDisconnect(device)
+            } else {
+                binding.itemBtConnect.text = context.getString(R.string.connecting)
+                listener?.onConnect(device)
             }
         }
     }

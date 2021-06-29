@@ -25,9 +25,7 @@ import com.reisdeveloper.itag_bluetoothlowenergy.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
 
-    private var _binding: FragmentHomeBinding? = null
-
-    private val binding get() = _binding!!
+    private var binding: FragmentHomeBinding? = null
 
     private val permissions = arrayOf(
         Manifest.permission.BLUETOOTH,
@@ -41,8 +39,8 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        return binding.root
+        binding = FragmentHomeBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -50,7 +48,7 @@ class HomeFragment : Fragment() {
 
         initBleManager()
 
-        binding.fab.setOnClickListener {
+        binding?.fab?.setOnClickListener {
             checkPermissions()
         }
 
@@ -67,11 +65,11 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupResultSearchDevicesList() {
-        with(binding.rvDeviceList) {
-            setHasFixedSize(true)
-            itemAnimator = null
-            adapter = scanDevicesAdapter
-            layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        with(binding?.rvDeviceList) {
+            this?.setHasFixedSize(true)
+            this?.itemAnimator = null
+            this?.adapter = scanDevicesAdapter
+            this?.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         }
 
         scanDevicesAdapter.setOnDeviceClickListener(
@@ -116,14 +114,14 @@ class HomeFragment : Fragment() {
             if (allPermissionsGranted())
                 onPermissionGranted()
             else
-                onPermissionDanied()
+                onPermissionDenied()
     }
 
     private fun onPermissionGranted() {
         bleScan()
     }
 
-    private fun onPermissionDanied() {
+    private fun onPermissionDenied() {
         Toast.makeText(
             requireContext(),
             "Permissions needed to scan bluetooth devices",
@@ -138,14 +136,14 @@ class HomeFragment : Fragment() {
     private fun bleScan() {
         BleManager.getInstance().scan(object : BleScanCallback() {
             override fun onScanStarted(success: Boolean) {
-                binding.homePvSerchDevices.visibility = View.VISIBLE
+                binding?.homePvSerchDevices?.visibility = View.VISIBLE
                 scanDevicesAdapter.clearScanResults()
             }
             override fun onScanning(bleDevice: BleDevice) {
                 scanDevicesAdapter.addDevice(bleDevice)
             }
             override fun onScanFinished(scanResultList: List<BleDevice>) {
-                binding.homePvSerchDevices.visibility = View.GONE
+                binding?.homePvSerchDevices?.visibility = View.GONE
             }
         })
     }
@@ -158,7 +156,7 @@ class HomeFragment : Fragment() {
             }
             override fun onConnectSuccess(bleDevice: BleDevice, gatt: BluetoothGatt, status: Int) {
                 scanDevicesAdapter.addDevice(bleDevice)
-                binding.homePvSerchDevices.visibility = View.GONE
+                binding?.homePvSerchDevices?.visibility = View.GONE
             }
             override fun onDisConnected(
                 isActiveDisConnected: Boolean,
@@ -173,11 +171,6 @@ class HomeFragment : Fragment() {
 
     private fun bleDisconnect(bleDevice: BleDevice) {
         BleManager.getInstance().disconnect(bleDevice)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     companion object {
