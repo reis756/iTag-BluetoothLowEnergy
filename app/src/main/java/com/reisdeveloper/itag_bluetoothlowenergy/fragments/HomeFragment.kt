@@ -1,9 +1,14 @@
 package com.reisdeveloper.itag_bluetoothlowenergy.fragments
 
 import android.Manifest
+import android.app.AlertDialog
 import android.bluetooth.BluetoothGatt
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.LocationManager
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,7 +43,6 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding?.root
     }
@@ -118,7 +122,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun onPermissionGranted() {
-        bleScan()
+        gpsNeeded()
     }
 
     private fun onPermissionDenied() {
@@ -171,6 +175,41 @@ class HomeFragment : Fragment() {
 
     private fun bleDisconnect(bleDevice: BleDevice) {
         BleManager.getInstance().disconnect(bleDevice)
+    }
+
+    private fun gpsNeeded(){
+        if(checkGPSIsOpen())
+            bleScan()
+        else{
+            val alertDialog: AlertDialog? = activity?.let {
+                val builder = AlertDialog.Builder(it)
+                builder.apply {
+                    setTitle(R.string.gps_must_be_enable)
+                    setMessage(R.string.please_activate_your_gps)
+                    setPositiveButton(R.string.active_gps) {dialog,_ ->
+                        actvateGps()
+                        dialog.dismiss()
+                    }
+                    setNegativeButton(R.string.not_now) {dialog,_ ->
+                        dialog.dismiss()
+                    }
+                }
+                builder.create()
+            }
+            alertDialog?.show()
+        }
+    }
+
+    private fun checkGPSIsOpen(): Boolean {
+        val locationManager =
+            context?.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
+                ?: return false
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+    }
+
+    private fun actvateGps(){
+        val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+        startActivity(intent)
     }
 
     companion object {
